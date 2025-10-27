@@ -3,14 +3,22 @@ from app.models import Admin
 from app.extensions import db
 import re
 from flask import jsonify
+from werkzeug.security import generate_password_hash
+
 
 admin_auth_bp = Blueprint('admin_auth', __name__, url_prefix='/admin')
 
-@admin_auth_bp.route('/init_db')
-def init_db():
-    db.create_all()
-    return jsonify({'message': 'Database tables created.'})
 
+
+@admin_auth_bp.route('/seed_admin')
+def seed_admin():
+    if Admin.query.filter_by(username='admin').first():
+        return jsonify({'message': 'Admin already exists.'})
+    
+    admin = Admin(username='admin', password_hash=generate_password_hash('admin123'))
+    db.session.add(admin)
+    db.session.commit()
+    return jsonify({'message': 'Admin user created successfully.'})
 # 🔐 Admin Login
 
 @admin_auth_bp.route('/login', methods=['GET', 'POST'])
