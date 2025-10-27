@@ -2,8 +2,14 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from app.models import Admin
 from app.extensions import db
 import re
+from flask import jsonify
 
 admin_auth_bp = Blueprint('admin_auth', __name__, url_prefix='/admin')
+
+@admin_auth_bp.route('/init_db')
+def init_db():
+    db.create_all()
+    return jsonify({'message': 'Database tables created.'})
 
 # 🔐 Admin Login
 
