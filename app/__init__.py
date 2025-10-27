@@ -8,6 +8,7 @@ from .main import main  # or .views if you named it views.py
 db = SQLAlchemy()
 migrate = Migrate()
 mail = Mail()
+
 def create_app():
     app = Flask(__name__)
 
