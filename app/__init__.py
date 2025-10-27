@@ -1,4 +1,9 @@
 import os
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from flask_mail import Mail
+from .main import main
 
 def create_app():
     app = Flask(__name__)
