@@ -7,6 +7,8 @@ from .main import main
 from .routes.admin import admin_bp  # ✅ Correct path to your admin blueprint
 from .routes.admin_auth import admin_auth_bp
 from .routes.auth import auth_bp
+from .routes.transactions import transactions_bp
+
 
 
 
@@ -33,5 +35,6 @@ def create_app():
     app.register_blueprint(admin_bp)
     app.register_blueprint(admin_auth_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(transactions_bp)
 
     return app
