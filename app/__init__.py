@@ -1,8 +1,6 @@
 import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-from flask_mail import Mail
+from .extensions import db, migrate, mail
 
 # Import blueprints
 from .main import main
@@ -10,10 +8,6 @@ from .routes.admin import admin_bp  # ✅ Correct path to your admin blueprint
 from .admin_auth import admin_auth_bp
 
 
-# Initialize extensions
-db = SQLAlchemy()
-migrate = Migrate()
-mail = Mail()
 
 def create_app():
     app = Flask(__name__)

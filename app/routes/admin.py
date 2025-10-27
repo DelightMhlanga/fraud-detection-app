@@ -5,8 +5,7 @@ import pandas as pd
 from io import BytesIO
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-from app import db
-
+from app.extensions import db
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin')
 
 # 🔍 Shared filter logic
