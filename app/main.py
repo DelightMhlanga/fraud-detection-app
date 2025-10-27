@@ -1,4 +1,5 @@
 from flask import Blueprint
+from flask import Blueprint, render_template
 
 main = Blueprint('main', __name__)
 
@@ -6,10 +7,10 @@ main = Blueprint('main', __name__)
 def home():
     return "Fraud Detection System is running!"
 
-@main.route('/auth/register')
+@main.route('/customer/register')
 def customer_register():
-    return "Customer Registration Page"
+    return render_template('register.html')
 
 @main.route('/admin/login')
 def admin_login():
-    return "Admin Login Page"
+    return render_template('admin_login.html')
