@@ -13,6 +13,6 @@ def customer_register():
         return "Customer registration submitted!"
     return render_template('register.html')
 
-@@main.route('/admin/login', methods=['GET', 'POST'])
+@main.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     return redirect('/admin/login')
