@@ -1,31 +1,25 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_mail import Mail
+from .main import main  # or .views if you named it views.py
 
 db = SQLAlchemy()
+migrate = Migrate()
+mail = Mail()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('config.Config')
 
+    # Load configuration from .env or config file
+    app.config.from_prefixed_env()
+
+    # Initialize extensions
     db.init_app(app)
-    migrate = Migrate(app, db)  # ✅ Initialize after app is created
-
-    # Import models so they’re registered
-    from app import models
+    migrate.init_app(app, db)
+    mail.init_app(app)
 
     # Register blueprints
-    from app.routes.auth import auth_bp
-    from app.routes.admin_auth import admin_auth_bp
-    from app.routes.orders import orders_bp
-    from app.routes.transactions import transactions_bp
-    from app.routes.admin import admin_bp
-
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(admin_auth_bp)
-    app.register_blueprint(orders_bp)
-    app.register_blueprint(transactions_bp)
-    app.register_blueprint(admin_bp)
+    app.register_blueprint(main)
 
     return app
-    
