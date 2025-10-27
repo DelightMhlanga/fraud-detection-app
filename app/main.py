@@ -15,7 +15,5 @@ def customer_register():
 
 @main.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    if request.method == 'POST':
-        # Handle admin login logic here
-        return "Login submitted!"
-    return render_template('admin_login.html')
+    # Redirect to the actual login logic in admin_auth blueprint
+    return redirect(url_for('admin_auth.login'))
