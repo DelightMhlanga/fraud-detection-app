@@ -8,6 +8,10 @@ from werkzeug.security import generate_password_hash
 
 admin_auth_bp = Blueprint('admin_auth', __name__, url_prefix='/admin')
 
+@admin_auth_bp.route('/init_db')
+def init_db():
+    db.create_all()
+    return jsonify({'message': 'Database tables created.'})
 
 
 @admin_auth_bp.route('/seed_admin')
