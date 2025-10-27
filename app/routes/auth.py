@@ -6,8 +6,7 @@ from app import db
 from app.utils.email_service import send_email
 from datetime import datetime
 
-auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
-
+auth_bp = Blueprint('auth', __name__)
 # 🔐 Register
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
