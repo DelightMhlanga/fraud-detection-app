@@ -3,8 +3,14 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_mail import Mail
-from .main import main  # or .views if you named it views.py
 
+# Import blueprints
+from .main import main
+from .admin import admin_bp
+from .admin_auth import admin_auth_bp
+
+
+# Initialize extensions
 db = SQLAlchemy()
 migrate = Migrate()
 mail = Mail()
@@ -13,6 +19,7 @@ def create_app():
     app = Flask(__name__)
 
     # Load configuration from environment
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-default-secret-key')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('SQLALCHEMY_DATABASE_URI')
     app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
     app.config['MAIL_PORT'] = os.getenv('MAIL_PORT')
@@ -28,5 +35,7 @@ def create_app():
 
     # Register blueprints
     app.register_blueprint(main)
+    app.register_blueprint(admin_bp)
+    app.register_blueprint(admin_auth_bp)
 
     return app
