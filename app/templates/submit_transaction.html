@@ -1,0 +1,124 @@
+{% extends "customer_dashboard.html" %}
+{% block content %}
+<style>
+    .transaction-container {
+        max-width: 500px;
+        margin: auto;
+        background-color: #f9f9f9;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .transaction-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .notification {
+        background-color: #dc3545;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+
+    .notification.success {
+        background-color: #28a745;
+    }
+
+    .notification.warning {
+        background-color: #ffc107;
+        color: black;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    input {
+        margin-bottom: 5px;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .error {
+        color: #ff4d4d;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+
+    button {
+        margin-top: 10px;
+        padding: 10px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+
+    @media screen and (max-width: 600px) {
+        .transaction-container {
+            padding: 15px;
+        }
+
+        input {
+            font-size: 15px;
+        }
+
+        button {
+            font-size: 15px;
+        }
+    }
+</style>
+
+<div class="transaction-container">
+    <h2>Submit Transaction</h2>
+
+    <!-- 🔔 Notification Box -->
+    {% if error == 'amount' %}
+        <div class="notification">Amount must be at least $1.</div>
+    {% elif error == 'invalid_format' %}
+        <div class="notification">Invalid amount format. Please enter a number.</div>
+    {% elif error == 'login_required' %}
+        <div class="notification">Please log in to submit a transaction.</div>
+    {% endif %}
+
+    {% if status == 'approved' %}
+        <div class="notification success">Transaction submitted successfully.</div>
+    {% elif status == 'fraudulent' %}
+        <div class="notification warning">Transaction pending for approval. Check your email.</div>
+    {% endif %}
+
+    <form method="POST">
+        <input name="amount" placeholder="Amount" required value="{{ form_data.amount if form_data.amount }}">
+        {% if field_errors.amount %}
+            <div class="error">{{ field_errors.amount }}</div>
+        {% endif %}
+
+        <input name="device_info" placeholder="Device Info" required value="{{ form_data.device_info if form_data.device_info }}">
+        {% if field_errors.device_info %}
+            <div class="error">{{ field_errors.device_info }}</div>
+        {% endif %}
+
+        <input name="location" placeholder="Location" required value="{{ form_data.location if form_data.location }}">
+        {% if field_errors.location %}
+            <div class="error">{{ field_errors.location }}</div>
+        {% endif %}
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+{% endblock %}

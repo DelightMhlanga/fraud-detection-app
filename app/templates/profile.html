@@ -1,0 +1,63 @@
+{% extends "customer_dashboard.html" %}
+{% block content %}
+<style>
+    .profile-container {
+        max-width: 600px;
+        margin: auto;
+        background-color: #f9f9f9;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .profile-container h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .profile-details {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .profile-details li {
+        padding: 12px 0;
+        border-bottom: 1px solid #ddd;
+        font-size: 16px;
+        color: #444;
+    }
+
+    .profile-details li strong {
+        display: inline-block;
+        width: 120px;
+        color: #222;
+    }
+
+    @media screen and (max-width: 600px) {
+        .profile-container {
+            padding: 15px;
+        }
+
+        .profile-details li {
+            font-size: 15px;
+        }
+
+        .profile-details li strong {
+            width: 100px;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <h2>Your Profile</h2>
+    <ul class="profile-details">
+        <li><strong>Name:</strong> {{ user.name }}</li>
+        <li><strong>Email:</strong> {{ user.email }}</li>
+        <li><strong>Location:</strong> {{ user.usual_location }}</li>
+        <li><strong>Device Info:</strong> {{ user.device_info }}</li>
+    </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,7 @@
+Flask
+Flask-SQLAlchemy
+bcrypt
+pandas
+openpyxl
+scikit-learn
+email-validator

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-image: url("/static/images/cust_reg.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #fff;
+        }
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        input {
+            margin-bottom: 5px;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+        }
+        .error {
+            color: #ff4d4d;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Register</h2>
+        <form method="POST">
+            <input name="name" placeholder="Name" required value="{{ form_data.name if form_data.name }}">
+            {% if field_errors.name %}
+                <div class="error">{{ field_errors.name }}</div>
+            {% endif %}
+
+            <input type="text" name="location" placeholder="Your usual location" required value="{{ form_data.location if form_data.location }}">
+
+            <input type="text" name="device_info" placeholder="Your device info" required value="{{ form_data.device_info if form_data.device_info }}">
+
+            <input name="email" type="email" placeholder="Email" required value="{{ form_data.email if form_data.email }}">
+            {% if field_errors.email %}
+                <div class="error">{{ field_errors.email }}</div>
+            {% endif %}
+
+            <input name="password" type="password" placeholder="Password" required>
+            {% if field_errors.password %}
+                <div class="error">{{ field_errors.password }}</div>
+            {% endif %}
+
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</body>
+</html>

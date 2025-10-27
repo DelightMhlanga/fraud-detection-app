@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>👤Customer Dashboard</title>
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("/static/images/cust_dash.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.85); /* light overlay for readability */
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: rgba(52, 58, 64, 0.95);
+            color: white;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        .main {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h3>Welcome, {{ user.name }}</h3>
+            <a href="{{ url_for('auth.profile') }}"><i class="fas fa-user"></i> Profile</a>
+            <a href="{{ url_for('transactions.submit_transaction') }}"><i class="fas fa-money-check-alt"></i> Submit Transaction</a>
+            <a href="{{ url_for('auth.change_password') }}"><i class="fas fa-key"></i> Change Password</a>
+            <a href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+        <div class="main">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

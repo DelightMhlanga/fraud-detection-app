@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-image: url("/static/images/admin_dash.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #fff;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 220px;
+            background-color: rgba(0, 0, 0, 0.85);
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+        }
+
+        .sidebar h2 {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: #ddd;
+            text-decoration: none;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .dashboard-container {
+            flex: 1;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        input, select, button {
+            padding: 8px;
+            margin-right: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            color: #000;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .notification {
+            background-color: #17a2b8;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        @media screen and (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                text-align: center;
+            }
+
+            .dashboard-container {
+                padding: 20px;
+            }
+
+            input, select, button {
+                margin-top: 10px;
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            table, th, td {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin Panel</h2>
+        <a href="{{ url_for('admin.dashboard') }}">📊 Transactions</a>
+        <a href="{{ url_for('admin_auth.change_password') }}">🔑 Change Password</a>
+       <a href="{{ url_for('admin.view_users') }}">👥 Users</a>
+        <a href="{{ url_for('admin_auth.logout') }}">🚪 Logout</a>
+    </div>
+
+    <div class="dashboard-container">
+        <h1>🛡️ Admin Dashboard</h1>
+
+        <!-- 🔔 Notification Placeholder -->
+        <div class="notification" id="notification-box">Action completed successfully.</div>
+
+        <!-- 🔍 Filter Form -->
+        <form method="GET" action="{{ url_for('admin.dashboard') }}">
+            <label>Customer Name:</label>
+            <input type="text" name="customer_name" value="{{ request.args.get('customer_name', '') }}">
+
+            <label>Status:</label>
+            <select name="status">
+                <option value="">All</option>
+                <option value="pending" {% if request.args.get('status') == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="approved" {% if request.args.get('status') == 'approved' %}selected{% endif %}>Approved</option>
+                <option value="fraudulent" {% if request.args.get('status') == 'fraudulent' %}selected{% endif %}>Fraudulent</option>
+                <option value="confirmed" {% if request.args.get('status') == 'confirmed' %}selected{% endif %}>Confirmed</option>
+            </select>
+
+            <button type="submit">Apply Filters</button>
+        </form>
+
+        <!-- 📤 Export Buttons -->
+        <form method="GET" action="{{ url_for('admin.export_excel') }}" style="display:inline;">
+            <input type="hidden" name="customer_name" value="{{ request.args.get('customer_name', '') }}">
+            <input type="hidden" name="status" value="{{ request.args.get('status', '') }}">
+            <button type="submit">Export to Excel</button>
+        </form>
+
+        <form method="GET" action="{{ url_for('admin.export_pdf') }}" style="display:inline;">
+            <input type="hidden" name="customer_name" value="{{ request.args.get('customer_name', '') }}">
+            <input type="hidden" name="status" value="{{ request.args.get('status', '') }}">
+            <button type="submit">Download as PDF</button>
+        </form>
+
+        <br><br>
+
+        <!-- 📋 Transaction Table -->
+        {% if transactions %}
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Customer</th>
+                <th>Amount</th>
+                <th>Device</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Time</th>
+            </tr>
+            {% for txn in transactions %}
+            <tr>
+                <td>{{ txn.id }}</td>
+                <td>{{ txn.customer.name }}</td>
+                <td>${{ txn.amount }}</td>
+                <td>{{ txn.device_info }}</td>
+                <td>{{ txn.location }}</td>
+                <td>{{ txn.status }}</td>
+                <td>{{ txn.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% else %}
+        <p>No transactions found.</p>
+        {% endif %}
+    </div>
+
+    <script>
+        // Example: Show notification dynamically
+        function showNotification(message) {
+            const box = document.getElementById("notification-box");
+            box.textContent = message;
+            box.style.display = "block";
+            setTimeout(() => {
+                box.style.display = "none";
+            }, 4000);
+        }
+
+        // Example usage: showNotification("Export completed successfully.");
+    </script>
+</body>
+</html>
