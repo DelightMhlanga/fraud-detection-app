@@ -8,25 +8,59 @@ from fraud_model import predict  # ✅ Import your model predictor
 
 transactions_bp = Blueprint('transactions', __name__, url_prefix='/transactions')
 
+# 🧾 Submit Transaction
 @transactions_bp.route('/submit', methods=['GET', 'POST'])
 def submit_transaction():
-    if 'user_id' not in session:
-        return redirect(url_for('auth.login', error='login_required'))
+    customer_id = session.get('user_id')
+    if not customer_id:
+        flash("⚠️ Session expired. Please log in again.")
+        return redirect(url_for('auth.login'))
 
-    customer_id = session['user_id']
     customer = Customer.query.get(customer_id)
+    if not customer:
+        flash("⚠️ Account not found. Please log in again.")
+        session.pop('user_id', None)
+        return redirect(url_for('auth.login'))
+
+    field_errors = {}
+    form_data = {}
 
     if request.method == 'POST':
+        amount_raw = request.form.get('amount', '').strip()
+        device_info = request.form.get('device_info', '').strip()
+        location = request.form.get('location', '').strip()
+
+        form_data = {
+            'amount': amount_raw,
+            'device_info': device_info,
+            'location': location
+        }
+
+        # Validate amount
         try:
-            amount = float(request.form['amount'])
+            amount = float(amount_raw)
             if amount < 1:
-                return redirect(url_for('transactions.submit_transaction', error='amount'))
+                field_errors['amount'] = "Amount must be at least $1."
         except ValueError:
-            return redirect(url_for('transactions.submit_transaction', error='invalid_format'))
+            field_errors['amount'] = "Amount must be a valid number."
 
-        device_info = request.form['device_info']
-        location = request.form['location']
+        if not device_info:
+            field_errors['device_info'] = "Device info is required."
 
+        if not location:
+            field_errors['location'] = "Location is required."
+
+        if field_errors:
+            return render_template(
+                'submit_transaction.html',
+                user=customer,
+                error=None,
+                status=None,
+                form_data=form_data,
+                field_errors=field_errors
+            )
+
+        # Prepare transaction data
         txn_data = {
             'amount': amount,
             'timestamp': datetime.utcnow(),
@@ -50,6 +84,7 @@ def submit_transaction():
         db.session.add(txn)
         db.session.commit()
 
+        # Send email if flagged
         if status == 'fraudulent':
             subject = "⚠️ Confirm Your Transaction"
             body = f"""
@@ -70,31 +105,36 @@ If this was NOT you, click here to report fraud:
 Thanks,  
 Fraud Detection System
 """
-            send_email(customer.email, subject, body)
+            try:
+                send_email(customer.email, subject, body)
+            except Exception as e:
+                print(f"❌ Email failed: {e}")
 
         return redirect(url_for('transactions.submit_transaction', status=status))
 
+    # GET request
     error = request.args.get('error')
     status = request.args.get('status')
     return render_template(
-    'submit_transaction.html',
-    user=customer,
-    error=error,
-    status=status,
-    form_data={},
-    field_errors={}
-)
-# Confirmation route for email links
+        'submit_transaction.html',
+        user=customer,
+        error=error,
+        status=status,
+        form_data={},
+        field_errors={}
+    )
+
+# ✅ Confirm Transaction via Email
 @transactions_bp.route('/confirm/<int:txn_id>/<confirm>')
 def confirm_fraud(txn_id, confirm):
     txn = Transaction.query.get_or_404(txn_id)
 
     if confirm == 'yes':
         txn.status = 'confirmed'
-        flash('Thanks for confirming. Transaction marked as safe.')
+        flash('✅ Thanks for confirming. Transaction marked as safe.')
     else:
         txn.status = 'fraudulent'
-        flash('Thanks for reporting. We’ve flagged this transaction.')
+        flash('🚨 Thanks for reporting. We’ve flagged this transaction.')
 
     db.session.commit()
     return redirect(url_for('transactions.submit_transaction'))
