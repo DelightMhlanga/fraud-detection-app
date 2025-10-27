@@ -6,7 +6,7 @@ from flask_mail import Mail
 
 # Import blueprints
 from .main import main
-from .admin import admin_bp
+from .routes.admin import admin_bp  # ✅ Correct path to your admin blueprint
 from .admin_auth import admin_auth_bp
 
 
