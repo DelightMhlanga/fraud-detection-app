@@ -13,7 +13,6 @@ def customer_register():
         return "Customer registration submitted!"
     return render_template('register.html')
 
-@main.route('/admin/login', methods=['GET', 'POST'])
+@@main.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    # Redirect to the actual login logic in admin_auth blueprint
-    return redirect(url_for('admin_auth.login'))
+    return redirect('/admin/login')
