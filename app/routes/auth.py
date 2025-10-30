@@ -28,7 +28,7 @@ def register():
         }
 
         # Validation rules
-        name_valid = bool(re.fullmatch(r"[A-Za-z\s!@#$%^&*()_+=\-{}\[\]:;\"'<>,.?/\\|~`]+", name))
+        name_valid = bool(re.fullmatch(r"[A-Za-z\`]+", name))
         email_valid = bool(re.fullmatch(r"[a-zA-Z0-9._%+-]+@gmail\.com", email))
         password_valid = len(password) >= 8 and bool(re.search(r"[!@#$%^&*(),.?\":{}|<>]", password))
 
