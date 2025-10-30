@@ -56,6 +56,22 @@
             padding: 30px;
             overflow-y: auto;
         }
+
+        .flashes {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+
+        .flashes li {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -68,6 +84,16 @@
             <a href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
         </div>
         <div class="main">
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <ul class="flashes">
+                  {% for message in messages %}
+                    <li>{{ message }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            {% endwith %}
+
             {% block content %}
             {% endblock %}
         </div>

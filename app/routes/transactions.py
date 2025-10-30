@@ -5,7 +5,6 @@ from datetime import datetime
 from app.utils.email_service import send_email  # ✅ Email helper
 from fraud_model import predict  # ✅ Import your model predictor
 
-
 transactions_bp = Blueprint('transactions', __name__, url_prefix='/transactions')
 
 # 🧾 Submit Transaction
@@ -137,4 +136,4 @@ def confirm_fraud(txn_id, confirm):
         flash('🚨 Thanks for reporting. We’ve flagged this transaction.')
 
     db.session.commit()
-    return redirect(url_for('transactions.submit_transaction'))
+    return redirect(url_for('auth.dashboard'))
