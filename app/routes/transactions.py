@@ -109,7 +109,7 @@ Fraud Detection System
             except Exception as e:
                 print(f"❌ Email failed: {e}")
 
-        return redirect(url_for('transactions.submit_transaction', status=status))
+        return redirect(url_for('auth.dashboard', status=status))
 
     # GET request
     error = request.args.get('error')
