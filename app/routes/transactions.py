@@ -126,7 +126,17 @@ Fraud Detection System
 # ✅ Confirm Transaction via Email
 @transactions_bp.route('/confirm/<int:txn_id>/<confirm>')
 def confirm_fraud(txn_id, confirm):
+    # Ensure the user is logged in
+    customer_id = session.get('user_id')
+    if not customer_id:
+        flash("⚠️ Please log in to confirm your transaction.")
+        return redirect(url_for('auth.login'))
+
     txn = Transaction.query.get_or_404(txn_id)
+
+    if txn.customer_id != customer_id:
+        flash("⚠️ You are not authorized to confirm this transaction.")
+        return redirect(url_for('auth.dashboard'))
 
     if confirm == 'yes':
         txn.status = 'confirmed'
